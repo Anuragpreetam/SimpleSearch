@@ -37,6 +37,23 @@ app.post("/", function(req, res){
         }
     });
 });
+//search route
+app.get("/search" , function(req , res){
+    res.render("search");
+})
+
+//get route for search
+app.get("/result" , function(req, res){
+   var value = req.query.SearchWord;
+   Student.findOne({name :value} , function(err , data){
+       if(err){
+           console.log(err);
+       }
+       else{
+           res.render("show" , {result : data});
+       }
+   })
+})
 app.listen(3000, function(){
     console.log("Server started!!");
 })
