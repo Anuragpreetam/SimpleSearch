@@ -2,7 +2,8 @@ var express = require("express"),
     app = express(),
     mongoose = require("mongoose"),
     bodyParser = require("body-parser");
-
+    methodOveride = require('method-override');
+    // alert = require('alert');
 mongoose.connect("mongodb://localhost/search_app",
         {
             useNewUrlParser: true,
@@ -13,6 +14,7 @@ mongoose.connect("mongodb://localhost/search_app",
 mongoose.set('useFindAndModify', false);
 app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
+app.use(methodOveride("_method"));
 app.use(express.static("public"));
 
 // SCHEMA
@@ -24,9 +26,13 @@ var studentSchema = new mongoose.Schema({
 });
 var Student = mongoose.model("Student", studentSchema);
 // ROUTES  
+
+// save route
 app.get("/", function(req, res){
     res.render("save");
 });
+
+//Index route
 app.post("/", function(req, res){
     Student.create(req.body.student, function(err, newStudent){
         if(err){
@@ -37,15 +43,16 @@ app.post("/", function(req, res){
         }
     });
 });
+
 //search route
 app.get("/search" , function(req , res){
     res.render("search");
 })
 
-//get route for search
-app.get("/result" , function(req, res){
+//show route
+app.get("/show" , function(req, res){
    var value = req.query.SearchWord;
-   Student.findOne({name :value} , function(err , data){
+   Student.findOne({name :value}  , function(err , data){
        if(err){
            console.log(err);
        }
@@ -53,6 +60,35 @@ app.get("/result" , function(req, res){
            res.render("show" , {result : data});
        }
    })
+})
+
+//edit route
+app.get("/edit/:id", function (req, res) {
+    var id = req.params.id;
+    Student.findById(id, function (err, data) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            res.render("edit", { result: data });
+        }
+    })
+})
+
+//update route
+app.put("/edit/:id", function (req, res) {
+    var id = req.params.id;
+    console.log(req.body.result);
+    Student.findByIdAndUpdate(id, req.body.result, function (err, data) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            console.log(data);
+            // alert("Successfully changed");
+            res.redirect("/search");
+        }
+    })
 })
 app.listen(3000, function(){
     console.log("Server started!!");
