@@ -90,6 +90,16 @@ app.put("/edit/:id", function (req, res) {
         }
     })
 })
+// delete
+app.delete("/delete/:id", function(req, res) {
+    Student.findByIdAndRemove(req.params.id, function(err){
+        if(err) {
+            console.log(err);
+        }else {
+            res.render("delete");
+        }
+    });
+});
 app.listen(3000, function(){
     console.log("Server started!!");
 })
