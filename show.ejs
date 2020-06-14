@@ -1,0 +1,12 @@
+<%- include("partials/header") %>
+<div class="ui main text container segment">
+    <h1><%= result.rollno %></h1>
+    <h2><%= result.name %></h2>
+    <h3><%= result.branch %></h3>
+    <h3><%= result.mobile %></h3>
+    <a href="/edit/<%=result._id%>" class="ui primary button">Edit</a>
+    <form action="/delete/<%= result._id %>?_method=DELETE" method="POST">
+        <button class="ui red big basic button">Delete </button>
+    </form>
+</div>
+<%- include("partials/footer") %>
