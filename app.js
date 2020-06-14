@@ -24,9 +24,11 @@ var studentSchema = new mongoose.Schema({
 });
 var Student = mongoose.model("Student", studentSchema);
 // ROUTES  
+//save route
 app.get("/", function(req, res){
     res.render("save");
 });
+//create route
 app.post("/", function(req, res){
     Student.create(req.body.student, function(err, newStudent){
         if(err){
@@ -34,6 +36,16 @@ app.post("/", function(req, res){
             res.render("save");
         }else {
             res.render("success");
+        }
+    });
+});
+// delete
+app.delete("/delete/:id", function(req, res) {
+    Student.findByIdAndRemove(req.params.id, function(err){
+        if(err) {
+            console.log(err);
+        }else {
+            res.render("delete");
         }
     });
 });
